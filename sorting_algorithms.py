@@ -15,7 +15,7 @@ def improved_bubble_sort(array):
                 array[j], array[j+1] = array[j+1], array[j]
                 swapped = True
         if not swapped:
-            break  # Sai se nenhuma troca foi feita (vetor já está ordenado)
+            break
     return array
 
 def quick_sort(array):
@@ -31,7 +31,7 @@ def quick_sort_mid_pivot(array):
     if len(array) <= 1:
         return array
     else:
-        mid = len(array) // 2  # Pivô é o elemento do meio
+        mid = len(array) // 2
         pivot = array[mid]
         less_than_pivot = [x for x in array[:mid] + array[mid+1:] if x <= pivot]
         greater_than_pivot = [x for x in array[:mid] + array[mid+1:] if x > pivot]
