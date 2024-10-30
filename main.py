@@ -1,5 +1,8 @@
 import os
 
+from english_interface import run_english_interface
+from portuguese_interface import run_portuguese_interface
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -12,7 +15,7 @@ while language < 1 or language > suported_languages:
             Select your language: 
             [1] <- English (Coming soon...)
             [2] <- Portuguese\n
-            """)
+        """)
 
     try:
         language = int(input("Enter your choice: "))
@@ -24,10 +27,10 @@ while language < 1 or language > suported_languages:
 if language == 1:
     input("Press any button to continue...")
     clear_screen()
-    english_interface()
+    run_english_interface()
 elif language == 2:
     input("Pressione qualquer tecla para continuar...")
     clear_screen()
-    portuguese_interface()
+    run_portuguese_interface()
 
 clear_screen()

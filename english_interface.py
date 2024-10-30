@@ -1,4 +1,4 @@
-from sorting_algorithms_lib import (
+from sorting_algorithms import (
     bubble_sort, 
     improved_bubble_sort,
     quick_sort, 
@@ -12,5 +12,5 @@ from sorting_algorithms_lib import (
 
 import random
 
-def english_interface():
+def run_english_interface():
     print("English is coming soon!")

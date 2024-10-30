@@ -9,3 +9,11 @@ from .sorting_algorithms import (
     heap_sort,
     merge_sort
 )
+
+from .english_interface import (
+    english_interface
+)
+
+from .portuguese_interface import (
+    portuguese_interface
+)

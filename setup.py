@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='sorting_algorithms_lib',
+    name='sorting_algorithms',
     version='1.0',
     packages=find_packages(),
     description='Library with some sorting algorithms',
