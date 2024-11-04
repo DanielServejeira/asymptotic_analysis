@@ -22,10 +22,9 @@ def quick_sort(array):
     if len(array) <= 1:
         return array
     else:
-        pivot = array[0]
-        less_than_pivot = [x for x in array[1:] if x <= pivot]
-        greater_than_pivot = [x for x in array[1:] if x > pivot]
-        return quick_sort(less_than_pivot) + [pivot] + quick_sort(greater_than_pivot)
+        return quick_sort([x for x in array[1:] if x < array[0]])
+        + [array[0]]
+        + quick_sort([x for x in array[1:] if x >= array[0]])
 
 def quick_sort_mid_pivot(array):
     if len(array) <= 1:
@@ -33,9 +32,9 @@ def quick_sort_mid_pivot(array):
     else:
         mid = len(array) // 2
         pivot = array[mid]
-        less_than_pivot = [x for x in array[:mid] + array[mid+1:] if x <= pivot]
-        greater_than_pivot = [x for x in array[:mid] + array[mid+1:] if x > pivot]
-        return quick_sort_mid_pivot(less_than_pivot) + [pivot] + quick_sort_mid_pivot(greater_than_pivot)
+        left = [x for x in array[:mid] + array[mid+1:] if x <= pivot]
+        right = [x for x in array[:mid] + array[mid+1:] if x > pivot]
+        return quick_sort_mid_pivot(left) + [pivot] + quick_sort_mid_pivot(right)
 
 def insertion_sort(array):
     for i in range(1, len(array)):

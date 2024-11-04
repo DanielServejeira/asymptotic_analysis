@@ -1,4 +1,4 @@
-from .sorting_algorithms import (
+from sorting_algorithms import (
     bubble_sort, 
     improved_bubble_sort,
     quick_sort, 
@@ -10,10 +10,10 @@ from .sorting_algorithms import (
     merge_sort
 )
 
-from .english_interface import (
-    english_interface
+from english_interface import (
+    run_english_interface
 )
 
-from .portuguese_interface import (
-    portuguese_interface
+from portuguese_interface import (
+    run_portuguese_interface
 )

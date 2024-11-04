@@ -25,11 +25,11 @@ while language < 1 or language > suported_languages:
         continue
 
 if language == 1:
-    input("Press any button to continue...")
+    input("Press Enter to continue...")
     clear_screen()
     run_english_interface()
 elif language == 2:
-    input("Pressione qualquer tecla para continuar...")
+    input("Pressione Enter para continuar...")
     clear_screen()
     run_portuguese_interface()
 
