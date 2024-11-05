@@ -21,7 +21,7 @@ class GraphApp:
         btn_aleatorio.pack(pady=5)
 
     def plot_graph(self, filename, title):
-        data = pd.read_csv(filename)
+        data = pd.read_csv(f"./data/{filename}")
 
         # Configurar a nova janela para o gráfico
         fig, ax = plt.subplots(figsize=(10, 6))
@@ -42,6 +42,11 @@ class GraphApp:
         plt.show()
 
 if __name__ == "__main__":
+    root = tk.Tk()
+    app = GraphApp(root)
+    root.mainloop()
+
+def run_graphics_app():
     root = tk.Tk()
     app = GraphApp(root)
     root.mainloop()
