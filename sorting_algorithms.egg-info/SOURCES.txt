@@ -1,7 +1,0 @@
-LICENSE
-README.md
-setup.py
-sorting_algorithms.egg-info/PKG-INFO
-sorting_algorithms.egg-info/SOURCES.txt
-sorting_algorithms.egg-info/dependency_links.txt
-sorting_algorithms.egg-info/top_level.txt
