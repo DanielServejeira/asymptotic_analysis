@@ -1,7 +1,7 @@
 import os
 
-from english_interface import run_english_interface
-from portuguese_interface import run_portuguese_interface
+from interfaces.english_interface import run_english_interface
+from interfaces.portuguese_interface import run_portuguese_interface
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')

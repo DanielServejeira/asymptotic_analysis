@@ -10,10 +10,10 @@ from sorting_algorithms import (
     merge_sort
 )
 
-from english_interface import (
+from interfaces.english_interface import (
     run_english_interface
 )
 
-from portuguese_interface import (
+from interfaces.portuguese_interface import (
     run_portuguese_interface
 )

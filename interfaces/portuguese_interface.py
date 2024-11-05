@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import random
 import time
+import pandas as pd
+import os
 
 # Importar seus algoritmos de ordenação
 from sorting_algorithms import (
@@ -28,6 +30,16 @@ def generate_arrays(size):
     descending = list(range(size, 0, -1))
     random_array = random.sample(range(size * 2), size)  # Garantir variedade no array
     return ascending, descending, random_array
+
+def save_times_to_csv(filename, algorithm_names, sizes, times):
+    os.makedirs("data", exist_ok=True)
+    filepath = os.path.join("data", filename)
+    
+    data = {'Algorithm': algorithm_names}
+    for i, size in enumerate(sizes):
+        data[f'{size} Elements'] = [times[j][i] for j in range(len(algorithm_names))]
+    df = pd.DataFrame(data)
+    df.to_csv(filepath, index=False)
 
 # plotar gráficos
 def plot_behavior(ax, sizes, times, algorithm_name):
@@ -113,6 +125,7 @@ class SortingApp(tk.Tk):
         
         sizes = [1000, 5000, 10000, 25000, 50000]
         times = [[], [], []]
+        algorithm_names = []
 
         algorithm_name = self.algorithm_choice.get().lower().replace(" ", "_")
         sort_function = globals()[algorithm_name]
@@ -136,6 +149,12 @@ class SortingApp(tk.Tk):
             self.update_idletasks()
 
         self.status_label.config(text="\nOperação concluída")
+
+        algorithm_names.append(algorithm_name)
+
+        save_times_to_csv("ascending.csv", algorithm_names, sizes, [times[0]])
+        save_times_to_csv("descending.csv", algorithm_names, sizes, [times[1]])
+        save_times_to_csv("random.csv", algorithm_names, sizes, [times[2]])
 
         self.sort_button.config(state=tk.NORMAL)
 
