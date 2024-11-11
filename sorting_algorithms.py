@@ -3,7 +3,7 @@ def bubble_sort(array):
     for i in range(n):
         for j in range(0, n-i-1):
             if(array[j] > array[j+1]):
-                array[j], array[j+1] = array[j+1], array[i]
+                array[j], array[j+1] = array[j+1], array[j]  # Fix index here
     return array
 
 def improved_bubble_sort(array):
@@ -19,12 +19,33 @@ def improved_bubble_sort(array):
     return array
 
 def quick_sort(array):
-    if len(array) <= 1:
-        return array
-    else:
-        return quick_sort([x for x in array[1:] if x < array[0]])
-        + [array[0]]
-        + quick_sort([x for x in array[1:] if x >= array[0]])
+    stack = [(0, len(array) - 1)]
+
+    while stack:
+        start, end = stack.pop()
+        if start >= end:
+            continue
+
+        pivot = array[start]
+        low = start + 1
+        high = end
+
+        while True:
+            while low <= high and array[high] >= pivot:
+                high -= 1
+            while low <= high and array[low] <= pivot:
+                low += 1
+            if low <= high:
+                array[low], array[high] = array[high], array[low]
+            else:
+                break
+
+        array[start], array[high] = array[high], array[start]
+
+        stack.append((start, high - 1))
+        stack.append((high + 1, end))
+
+    return array
 
 def quick_sort_mid_pivot(array):
     if len(array) <= 1:
@@ -32,9 +53,10 @@ def quick_sort_mid_pivot(array):
     else:
         mid = len(array) // 2
         pivot = array[mid]
-        left = [x for x in array[:mid] + array[mid+1:] if x <= pivot]
-        right = [x for x in array[:mid] + array[mid+1:] if x > pivot]
-        return quick_sort_mid_pivot(left) + [pivot] + quick_sort_mid_pivot(right)
+        left = [x for x in array if x < pivot]
+        middle = [x for x in array if x == pivot]
+        right = [x for x in array if x > pivot]
+        return quick_sort_mid_pivot(left) + middle + quick_sort_mid_pivot(right)
 
 def insertion_sort(array):
     for i in range(1, len(array)):
@@ -127,4 +149,3 @@ def merge_sort(array):
             k += 1
 
     return array
-    

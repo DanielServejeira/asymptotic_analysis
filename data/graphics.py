@@ -23,14 +23,17 @@ class GraphApp:
     def plot_graph(self, filename, title):
         data = pd.read_csv(f"./data/{filename}")
 
+        # Calcular a média aritmética para cada algoritmo de ordenação
+        avg_data = data.groupby('Algorithm').mean().reset_index()
+
         # Configurar a nova janela para o gráfico
         fig, ax = plt.subplots(figsize=(10, 6))
 
         # Plotar os dados de cada algoritmo
-        for index, row in data.iterrows():
+        for index, row in avg_data.iterrows():
             algorithm = row['Algorithm']
             times = row.iloc[1:].values
-            sizes = data.columns[1:]  # Extrair os tamanhos de array do cabeçalho do CSV
+            sizes = avg_data.columns[1:]  # Extrair os tamanhos de array do cabeçalho do CSV
             ax.plot(sizes, times, marker='o', label=algorithm)
             
         ax.set_title(f'Tempo de Execução para {title}')
