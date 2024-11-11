@@ -35,50 +35,34 @@ def save_times_to_csv(filename, algorithm_names, sizes, times):
     os.makedirs("data", exist_ok=True)
     filepath = os.path.join("data", filename)
     
-    data = {'Algorithm': algorithm_names}
-    for i, size in enumerate(sizes):
-        data[f'{size} Elements'] = [times[j][i] for j in range(len(algorithm_names))]
-    df = pd.DataFrame(data)
-    df.to_csv(filepath, index=False)
-
-# plotar gráficos
-def plot_behavior(ax, sizes, times, algorithm_name):
-    labels = ['Crescente', 'Decrescente', 'Aleatório']
-    colors = ['blue', 'red', 'green']
-
-    for i in range(len(times)):
-        ax.plot(sizes, times[i], marker='o', label=labels[i], color=colors[i])
-
-    ax.set_title(f'{algorithm_name} - Tempo de Execução')
-    ax.set_xlabel('Tamanho do Array')
-    ax.set_ylabel('Tempo (segundos)')
-    ax.legend()
-
-    # comportamento assintótico
-    notations = {
-        'bubble_sort': 'θ(n²) | θ(n²) | θ(n²)',
-        'improved_bubble_sort': 'θ(n) | θ(n²) | θ(n²)',
-        'quick_sort': 'θ(n²) | θ(n log n) | θ(n log n)',
-        'quick_sort_mid_pivot': 'θ(n log n) | θ(n log n) | θ(n log n)',
-        'insertion_sort': 'θ(n) | θ(n²) | θ(n²)',
-        'shell_sort': 'θ(n log n) | θ(n log n²) | θ(n log n)',
-        'selection_sort': 'θ(n²) | θ(n²) | θ(n²)',
-        'heap_sort': 'θ(n log n) | θ(n log n) | θ(n log n)',
-        'merge_sort': 'θ(n log n) | θ(n log n) | θ(n log n)'
-    }
+    if os.path.exists(filepath):
+        existing_df = pd.read_csv(filepath)
+        new_data = {'Algorithm': algorithm_names}
+        for i, size in enumerate(sizes):
+            new_data[f'{size} Elements'] = [times[j][i] for j in range(len(algorithm_names))]
+        new_df = pd.DataFrame(new_data)
+        combined_df = pd.concat([existing_df, new_df], ignore_index=True)
+        
+        # Limitar cada algoritmo a ter um máximo de 10 entradas
+        combined_df = combined_df.groupby('Algorithm').head(10).reset_index(drop=True)
+    else:
+        data = {'Algorithm': algorithm_names}
+        for i, size in enumerate(sizes):
+            data[f'{size} Elements'] = [times[j][i] for j in range(len(algorithm_names))]
+        combined_df = pd.DataFrame(data)
     
-    ax.text(0.5, -0.15, f"Comportamento Assintótico - {algorithm_name}:\nCrescente: {notations[algorithm_name][0]} | Descendente: {notations[algorithm_name][1]} | Aleatório: {notations[algorithm_name][2]}",
-            ha='center', va='center', transform=ax.transAxes)
+    combined_df.to_csv(filepath, index=False)
 
 class SortingApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Gerador de Gráficos")
-        self.geometry("800x500")
+        self.geometry("900x600")
 
         title = ttk.Label(self, text="Escolha o algoritmo de ordenação", font=("Arial", 16))
         title.pack(pady=20)
 
+        # Adicionando combobox para escolher o algoritmo
         self.algorithm_choice = ttk.Combobox(self, values=[
             "Bubble Sort", "Improved Bubble Sort", "Quick Sort", 
             "Quick Sort Mid Pivot", "Insertion Sort", "Shell Sort", 
@@ -87,10 +71,12 @@ class SortingApp(tk.Tk):
         self.algorithm_choice.pack(pady=10)
         self.algorithm_choice.current(0)
 
+        # Adicionando label para exibir o progresso
         progress_text = tk.StringVar(value="")
         progress_label = ttk.Label(self, textvariable=progress_text, font=("Arial", 12))
         progress_label.pack(pady=10)
 
+        # Adicionando botão para ordenar os arrays
         self.sort_button = ttk.Button(self, text="Ordenar Arrays", command=self.sort_arrays)
         self.sort_button.pack()
 
@@ -100,19 +86,47 @@ class SortingApp(tk.Tk):
 
         # Frame principal para o gráfico e o botão de saída
         self.main_frame = tk.Frame(self)
-        self.main_frame.pack(fill="both", expand=True)
+        self.main_frame.pack(fill="both")
 
         # Frame para o gráfico com altura fixa
         self.graph_frame = tk.Frame(self.main_frame, height=300)
         self.graph_frame.pack(fill="x", pady=(0, 10))
 
         # Frame para o botão de saída
-        self.exit_frame = tk.Frame(self.main_frame)
-        self.exit_frame.pack(fill="x", pady=10)
+        self.exit_frame = tk.Frame(self.main_frame, height=100)
+        self.exit_frame.pack(fill="x", pady=(0, 10))
 
         # Botão para sair
         exit_button = ttk.Button(self.exit_frame, text="Sair", command=self.quit)
-        exit_button.pack(pady=10)
+        exit_button.pack(pady=0)
+
+    def plot_behavior(self, ax, sizes, times, algorithm_name):
+        labels = ['Crescente', 'Decrescente', 'Aleatório']
+        colors = ['blue', 'red', 'green']
+
+        for i in range(len(times)):
+            ax.plot(sizes, times[i], marker='o', label=labels[i], color=colors[i])
+
+        ax.set_title(f'{algorithm_name} - Tempo de Execução')
+        ax.set_xlabel('Tamanho do Array')
+        ax.set_ylabel('Tempo (segundos)')
+        ax.legend()
+
+        # comportamento assintótico
+        notations = {
+            'bubble_sort': 'θ(n²) | θ(n²) | θ(n²)',
+            'improved_bubble_sort': 'θ(n) | θ(n²) | θ(n²)',
+            'quick_sort': 'θ(n log n) | θ(n log n) | θ(n log n)',
+            'quick_sort_mid_pivot': 'θ(n log n) | θ(n log n) | θ(n log n)',
+            'insertion_sort': 'θ(n) | θ(n²) | θ(n²)',
+            'shell_sort': 'θ(n log n) | θ(n log n²) | θ(n log n)',
+            'selection_sort': 'θ(n²) | θ(n²) | θ(n²)',
+            'heap_sort': 'θ(n log n) | θ(n log n) | θ(n log n)',
+            'merge_sort': 'θ(n log n) | θ(n log n) | θ(n log n)'
+        }
+        
+        ax.text(0.5, -0.15, f"Comportamento Assintótico - {algorithm_name}:\nCrescente: {notations[algorithm_name]}",
+                ha='center', va='center', transform=ax.transAxes)
 
     def sort_arrays(self):
         self.sort_button.config(state=tk.DISABLED)
@@ -131,8 +145,8 @@ class SortingApp(tk.Tk):
         sort_function = globals()[algorithm_name]
 
         for i, size in enumerate(sizes):
-            # Atualizar o status
-            self.status_label.config(text=f"\nOrdenando arrays de {size} elementos...")
+            # Imprimir o status no terminal
+            print(f"Ordenando arrays de {size} elementos...")
 
             ascending, descending, random_array = generate_arrays(size)
 
@@ -144,11 +158,14 @@ class SortingApp(tk.Tk):
             times[1].append(time_descending)
             times[2].append(time_random)
 
-            # Atualizar o status após a ordenação
-            self.status_label.config(text=f"\nArray de {size} elementos ordenado [{time_ascending:.4f} segundos]")
-            self.update_idletasks()
+            # Imprimir o status no terminal após a ordenação
+            print(f"Array de {size} elementos ordenado crescente [{time_ascending:.4f} segundos]")
+            print(f"Array de {size} elementos ordenado decrescente [{time_descending:.4f} segundos]")
+            print(f"Array de {size} elementos aleatório [{time_random:.4f} segundos]")
 
+        # Atualizar a label de status após a ordenação
         self.status_label.config(text="\nOperação concluída")
+        self.update_idletasks()
 
         algorithm_names.append(algorithm_name)
 
@@ -159,8 +176,7 @@ class SortingApp(tk.Tk):
         self.sort_button.config(state=tk.NORMAL)
 
         # Plotar o gráfico
-        plot_button = ttk.Button(self, text="Plotar Gráfico", command=lambda: self.plot_behavior(ax, sizes, times, algorithm_name))
-        plot_button.pack(pady=20)
+        self.plot_behavior(ax, sizes, times, algorithm_name)
 
         # Renderizar o gráfico no tkinter
         canvas = FigureCanvasTkAgg(fig, master=self.graph_frame)
