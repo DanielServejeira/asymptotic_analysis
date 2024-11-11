@@ -53,6 +53,52 @@ def save_times_to_csv(filename, algorithm_names, sizes, times):
     
     combined_df.to_csv(filepath, index=False)
 
+def show_csv_info():
+    root = tk.Tk()
+    root.title("Informações do CSV")
+    root.geometry("800x600")
+
+    tab_control = ttk.Notebook(root)
+    tab_control.pack(expand=1, fill='both')
+
+    for filename, title in [("ascending.csv", "Crescente"), ("descending.csv", "Decrescente"), ("random.csv", "Aleatório")]:
+        try:
+            data = pd.read_csv(f"./data/{filename}")
+            avg_data = data.groupby('Algorithm').mean().reset_index()
+
+            # Translate column names to Portuguese
+            column_mapping = {
+                'Algorithm': 'Algoritmo',
+                '1000 Elements': '1000 elementos',
+                '5000 Elements': '5000 elementos',
+                '10000 Elements': '10000 elementos',
+                '25000 Elements': '25000 elementos',
+                '50000 Elements': '50000 elementos'
+            }
+            avg_data.rename(columns=column_mapping, inplace=True)
+
+            # Add 's' to each time value
+            for col in avg_data.columns[1:]:
+                avg_data[col] = avg_data[col].apply(lambda x: f"{x:.6f}s")
+
+            frame = ttk.Frame(tab_control)
+            tab_control.add(frame, text=title)
+
+            tree = ttk.Treeview(frame, columns=list(avg_data.columns), show='headings')
+            tree.pack(expand=1, fill='both')
+
+            for col in avg_data.columns:
+                tree.heading(col, text=col)
+                tree.column(col, width=100)
+
+            for _, row in avg_data.iterrows():
+                tree.insert("", "end", values=list(row))
+
+        except FileNotFoundError:
+            print(f"Arquivo {filename} não encontrado.")
+
+    root.mainloop()
+
 class SortingApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -187,3 +233,49 @@ def run_portuguese_interface():
     print("Bem-vindo")
     app = SortingApp()
     app.mainloop()
+class GraphApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Exibir Gráficos de Ordenação")
+        self.root.geometry("300x200")
+
+        title = tk.Label(root, text="Escolha um gráfico para exibir", font=("Arial", 14))
+        title.pack(pady=10)
+
+        btn_crescente = tk.Button(root, text="Gráfico Array Crescente", command=lambda: self.plot_graph("ascending.csv", "Crescente"))
+        btn_crescente.pack(pady=5)
+
+        btn_decrescente = tk.Button(root, text="Gráfico Array Decrescente", command=lambda: self.plot_graph("descending.csv", "Decrescente"))
+        btn_decrescente.pack(pady=5)
+
+        btn_aleatorio = tk.Button(root, text="Gráfico Array Aleatório", command=lambda: self.plot_graph("random.csv", "Aleatório"))
+        btn_aleatorio.pack(pady=5)
+
+    def plot_graph(self, filename, title):
+        data = pd.read_csv(f"./data/{filename}")
+
+        # Calcular a média aritmética para cada algoritmo de ordenação
+        avg_data = data.groupby('Algorithm').mean().reset_index()
+
+        # Configurar a nova janela para o gráfico
+        fig, ax = plt.subplots(figsize=(10, 6))
+
+        # Plotar os dados de cada algoritmo
+        for index, row in avg_data.iterrows():
+            algorithm = row['Algorithm']
+            times = row.iloc[1:].values
+            sizes = avg_data.columns[1:]  # Extrair os tamanhos de array do cabeçalho do CSV
+            ax.plot(sizes, times, marker='o', label=algorithm)
+            
+        ax.set_title(f'Tempo de Execução para {title}')
+        ax.set_xlabel('Tamanho do Array')
+        ax.set_ylabel('Tempo (segundos)')
+        ax.legend()
+
+        # Mostrar o gráfico em uma nova janela
+        plt.show()
+
+def run_graphics_app():
+    root = tk.Tk()
+    app = GraphApp(root)
+    root.mainloop()
