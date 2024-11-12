@@ -233,6 +233,55 @@ def run_portuguese_interface():
     print("Bem-vindo")
     app = SortingApp()
     app.mainloop()
+
+def show_runtime_graph():
+    root = tk.Tk()
+    root.title("Gráfico de Tempo de Execução por Algoritmo")
+    root.geometry("300x400")
+
+    title = tk.Label(root, text="Escolha um algoritmo para exibir", font=("Arial", 14))
+    title.pack(pady=10)
+
+    algorithms = [
+        "bubble_sort", "improved_bubble_sort", "quick_sort", 
+        "quick_sort_mid_pivot", "insertion_sort", "shell_sort", 
+        "selection_sort", "heap_sort", "merge_sort"
+    ]
+
+    def plot_algorithm_graph(algorithm):
+        data_ascending = pd.read_csv("./data/ascending.csv")
+        data_descending = pd.read_csv("./data/descending.csv")
+        data_random = pd.read_csv("./data/random.csv")
+
+        if algorithm not in data_ascending['Algorithm'].values:
+            print(f"Algoritmo {algorithm} não encontrado nos dados.")
+            return
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+
+        sizes = data_ascending.columns[1:]
+
+        times_ascending = data_ascending[data_ascending['Algorithm'] == algorithm].iloc[0, 1:].values
+        times_descending = data_descending[data_descending['Algorithm'] == algorithm].iloc[0, 1:].values
+        times_random = data_random[data_random['Algorithm'] == algorithm].iloc[0, 1:].values
+
+        ax.plot(sizes, times_ascending, marker='o', label='Crescente', color='blue')
+        ax.plot(sizes, times_descending, marker='o', label='Decrescente', color='red')
+        ax.plot(sizes, times_random, marker='o', label='Aleatório', color='green')
+
+        ax.set_title(f'Tempo de Execução para {algorithm}')
+        ax.set_xlabel('Tamanho do Array')
+        ax.set_ylabel('Tempo (segundos)')
+        ax.legend()
+
+        plt.show()
+
+    for algorithm in algorithms:
+        btn = tk.Button(root, text=algorithm, command=lambda alg=algorithm: plot_algorithm_graph(alg))
+        btn.pack(pady=5)
+
+    root.mainloop()
+
 class GraphApp:
     def __init__(self, root):
         self.root = root
