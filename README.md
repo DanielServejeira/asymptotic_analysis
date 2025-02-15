@@ -27,7 +27,7 @@ This project focuses on implementing various sorting algorithms and providing an
 ## Files and Structure
 
 ```
-project_root/
+asymptotic_analysis/
 │-- data/
 │   │-- ascending.csv
 │   │-- descending.csv
@@ -48,20 +48,20 @@ project_root/
 ## Installation
 
 1. Clone the repository:
-   ```sh
+   ```bash
    git clone https://github.com/DanielServejeira/asymptotic_analysis
    cd asymptotic_analysis
    ```
 
 2. Install dependencies:
-   ```sh
+   ```bash
    pip install -r requirements.txt
    ```
 
 ## Usage
 
 To execute the program, simply run:
-```sh
+```bash
 python main.py
 ```
 
