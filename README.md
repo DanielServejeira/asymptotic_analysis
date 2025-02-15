@@ -49,8 +49,8 @@ project_root/
 
 1. Clone the repository:
    ```sh
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/DanielServejeira/asymptotic_analysis
+   cd asymptotic_analysis
    ```
 
 2. Install dependencies:
