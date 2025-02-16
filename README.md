@@ -55,7 +55,8 @@ asymptotic_analysis/
 
 2. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install pandas
+   pip install matplotlib
    ```
 
 ## Usage
